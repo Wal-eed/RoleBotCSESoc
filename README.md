@@ -1,1 +1,1 @@
-# csesocbot
+# CSESocRoleBot
