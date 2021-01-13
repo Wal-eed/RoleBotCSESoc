@@ -18,7 +18,7 @@ async def on_ready():
 async def on_message(message):
     try:
         # Check if the message is in the roles channel, and delete it after completion
-        if message.channel.name == 'roles':
+        if message.channel.id == role_channel_id:
             await client.process_commands(message)
             await message.channel.purge(limit=1)
         else:
@@ -65,19 +65,19 @@ async def give(ctx, role_input):
     message = ctx.message
     role_input = role_input.upper()
     channel = client.get_channel(rolelog_channel_id)
-
-    try:
-        role = get(ctx.guild.roles, name=role_input)
-        await user.add_roles(role)
-        await ctx.message.add_reaction("👍")
-        await ctx.send(f'Added {role_input} to {user}')
-        await channel.send(f'Added {role_input} to {user}')
-        time.sleep(1)
-    except:
-        await ctx.send('Please wait before sending another message. Please make sure your course code '
-                       'is joined together. eg:COMP1511')
-        await channel.send(f'Failed to add {role_input} to {user}')
-        time.sleep(2)
+    if message.channel.id == role_channel_id:
+        try:
+            role = get(ctx.guild.roles, name=role_input)
+            await user.add_roles(role)
+            await ctx.message.add_reaction("👍")
+            await ctx.send(f'Added {role_input} to {user}')
+            await channel.send(f'Added {role_input} to {user}')
+            time.sleep(1)
+        except:
+            await ctx.send('Please wait before sending another message. Please make sure your course code '
+                           'is joined together. eg:COMP1511')
+            await channel.send(f'Failed to add {role_input} to {user}')
+            time.sleep(2)
 
 
 # Take away user's role.
@@ -87,19 +87,21 @@ async def remove(ctx, role_input):
     channel = client.get_channel(rolelog_channel_id)
 
     user = ctx.message.author
+    message = ctx.message
     role_input = role_input.upper()
-    try:
-        role = get(ctx.guild.roles, name=role_input)
-        await user.remove_roles(role)
-        await ctx.message.add_reaction("👍")
-        await ctx.send(f'Removed {role_input} from {user}')
-        await channel.send(f'Removed {role_input} to {user}')
-        time.sleep(1)
-    except:
-        await ctx.send('Please wait before sending another message. Please make sure your course code '
-                       'is joined together. eg:COMP1511')
-        await channel.send(f'Failed to remove {role_input} from {user}')
-        time.sleep(2)
+    if message.channel.id == role_channel_id:
+        try:
+            role = get(ctx.guild.roles, name=role_input)
+            await user.remove_roles(role)
+            await ctx.message.add_reaction("👍")
+            await ctx.send(f'Removed {role_input} from {user}')
+            await channel.send(f'Removed {role_input} to {user}')
+            time.sleep(1)
+        except:
+            await ctx.send('Please wait before sending another message. Please make sure your course code '
+                           'is joined together. eg:COMP1511')
+            await channel.send(f'Failed to remove {role_input} from {user}')
+            time.sleep(2)
 
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
