@@ -6,7 +6,6 @@ from discord.utils import get
 
 
 client = commands.Bot(command_prefix="!")
-token = os.getenv("DISCORD_BOT_TOKEN")
 role_channel_id = 0
 rolelog_channel_id = 0
 
