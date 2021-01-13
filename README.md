@@ -12,6 +12,6 @@ Only users with administrator privileges can use these commands.
 
 ## Commands
 
-##### ```!give ROLE``` : Gives the user the specified role
-##### ```!remove ROLE``` : Removes the specified role
+##### ```!give ROLE``` : Gives the user the specified role.
+##### ```!remove ROLE``` : Removes the specified role.
 ##### ```!clear VALUE``` : Clears multiple messages at once in the channel the command is used in, up to a maximum of 10 at a time. Only users with administrator privileges can use this.
