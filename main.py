@@ -103,4 +103,4 @@ async def remove(ctx, role_input):
         time.sleep(2)
 
 
-client.run(token)
+client.run(os.environ['DISCORD_BOT_TOKEN'])
