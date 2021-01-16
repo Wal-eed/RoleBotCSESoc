@@ -20,7 +20,8 @@ async def on_message(message):
         # Check if the message is in the roles channel, and delete it after completion
         if message.channel.id == role_channel_id:
             await client.process_commands(message)
-            await message.channel.purge(limit=1)
+            time.sleep(2)
+            await message.delete
         else:
             await client.process_commands(message)
     except:
@@ -72,13 +73,11 @@ async def give(ctx, role_input):
             await ctx.message.add_reaction("👍")
             await ctx.send(f'Added {role_input} to {user}')
             await channel.send(f'Added {role_input} to {user}')
-            time.sleep(1)
         except:
             await ctx.send('Please wait before sending another message. Please make sure your course code '
                            'is joined together. eg:COMP1511')
             await channel.send(f'Failed to add {role_input} to {user}')
-            time.sleep(2)
-
+            
 
 # Take away user's role.
 @client.command()
@@ -96,12 +95,10 @@ async def remove(ctx, role_input):
             await ctx.message.add_reaction("👍")
             await ctx.send(f'Removed {role_input} from {user}')
             await channel.send(f'Removed {role_input} to {user}')
-            time.sleep(1)
         except:
             await ctx.send('Please wait before sending another message. Please make sure your course code '
                            'is joined together. eg:COMP1511')
             await channel.send(f'Failed to remove {role_input} from {user}')
-            time.sleep(2)
 
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
