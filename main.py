@@ -20,13 +20,12 @@ async def on_message(message):
         # Check if the message is in the roles channel, and delete it after completion
         if message.channel.id == role_channel_id:
             await client.process_commands(message)
-            time.sleep(2)
-            await message.delete
+            await message.delete(2)
         else:
             await client.process_commands(message)
     except:
         time.sleep(1.2)
-        await message.channel.purge(limit=1)
+        await message.delete()
 
 
 # Clear multiple messages in a channel at once, up to 10 at a time.
