@@ -6,7 +6,7 @@ from discord.utils import get
 
 
 client = commands.Bot(command_prefix="!")
-ROLE_CHANNEL_ID= 0
+ROLE_CHANNEL_ID = 0
 ROLELOG_CHANNEL_ID = 0
 
 @client.event
