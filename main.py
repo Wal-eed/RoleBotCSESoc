@@ -6,8 +6,8 @@ from discord.utils import get
 
 
 client = commands.Bot(command_prefix="!")
-role_channel_id = 0
-rolelog_channel_id = 0
+ROLE_CHANNEL_ID = 0
+ROLELOG_CHANNEL_ID = 0
 
 @client.event
 async def on_ready():
@@ -18,7 +18,7 @@ async def on_ready():
 async def on_message(message):
     try:
         # Check if the message is in the roles channel, and delete it after completion
-        if message.channel.id == role_channel_id:
+        if message.channel.id == ROLE_CHANNEL_ID:
             await client.process_commands(message)
             await message.delete(2)
         else:
@@ -41,31 +41,31 @@ async def clear(ctx, count=3):
 @client.command()
 @commands.has_permissions(administrator=True)
 async def setrole(ctx):
-    global role_channel_id
-    role_channel_id = ctx.channel.id
-    await ctx.send(f"Set {ctx.channel} as default role log channel.")
-    print(f'Set{role_channel_id} as default role log channel')
+    global ROLE_CHANNEL_ID
+    ROLE_CHANNEL_ID = ctx.channel.id
+    await ctx.send(f"Set {ctx.channel} as default role channel.")
+    print(f'Set {ROLE_CHANNEL_ID} as default role channel')
 
 
 # Set role log channel.
 @client.command()
 @commands.has_permissions(administrator=True)
 async def setrolelog(ctx):
-    global rolelog_channel_id
-    rolelog_channel_id= ctx.channel.id
+    global ROLELOG_CHANNEL_ID
+    ROLELOG_CHANNEL_ID = ctx.channel.id
     await ctx.send(f"Set {ctx.channel} as default role log channel.")
-    print(f'Set{rolelog_channel_id} as default role log channel')
+    print(f'Set {ROLELOG_CHANNEL_ID} as default role log channel')
 
 
 # Give user a role.
 @client.command()
 async def give(ctx, role_input):
-    global rolelog_channel_id
+    global ROLELOG_CHANNEL_ID
     user = ctx.message.author
     message = ctx.message
     role_input = role_input.upper()
-    channel = client.get_channel(rolelog_channel_id)
-    if message.channel.id == role_channel_id:
+    channel = client.get_channel(ROLELOG_CHANNEL_ID)
+    if message.channel.id == ROLE_CHANNEL_ID:
         try:
             role = get(ctx.guild.roles, name=role_input)
             await user.add_roles(role)
@@ -81,13 +81,13 @@ async def give(ctx, role_input):
 # Take away user's role.
 @client.command()
 async def remove(ctx, role_input):
-    global rolelog_channel_id
-    channel = client.get_channel(rolelog_channel_id)
+    global ROLELOG_CHANNEL_ID
+    channel = client.get_channel(ROLELOG_CHANNEL_ID)
 
     user = ctx.message.author
     message = ctx.message
     role_input = role_input.upper()
-    if message.channel.id == role_channel_id:
+    if message.channel.id == ROLE_CHANNEL_ID:
         try:
             role = get(ctx.guild.roles, name=role_input)
             await user.remove_roles(role)
