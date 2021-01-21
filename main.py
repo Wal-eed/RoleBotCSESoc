@@ -73,7 +73,7 @@ async def give(ctx, *role_inputs):
                 await ctx.send(f'✅ Gave {role_input} to {user}')
                 await logchannel.send(f'✅ Gave {role_input} to {user}')
             except:
-                await ctx.send(f'❌ Failed to give {role_input} to {user}')
+                await ctx.send(f'❌ Failed to give {role_input} to {user}. Please make sure your course code matches exactly e.g. `COMP1511` not `COMP 1511`')
                 await logchannel.send(f'❌ Failed to give {role_input} to {user}')
 
 
@@ -93,7 +93,7 @@ async def remove(ctx, *role_inputs):
                 await ctx.send(f'✅ Removed {role_input} from {user}')
                 await logchannel.send(f'✅ Removed {role_input} from {user}')
             except:
-                await ctx.send(f'❌ Failed to remove {role_input} from {user}')
+                await ctx.send(f'❌ Failed to remove {role_input} from {user}. Please make sure your course code matches exactly e.g. `COMP1511` not `COMP 1511`')
                 await logchannel.send(f'❌ Failed to remove {role_input} from {user}')
 
 
