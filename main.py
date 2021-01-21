@@ -43,7 +43,7 @@ async def clear(ctx, count=3):
 async def setrole(ctx):
     global ROLE_CHANNEL_ID
     ROLE_CHANNEL_ID = ctx.channel.id
-    await ctx.send(f"Set {ctx.channel} as default role channel.")
+    await ctx.send(f"Set <#{ROLE_CHANNEL_ID}> as default role channel.")
     print(f'Set {ROLE_CHANNEL_ID} as default role channel')
 
 
@@ -53,7 +53,7 @@ async def setrole(ctx):
 async def setrolelog(ctx):
     global ROLELOG_CHANNEL_ID
     ROLELOG_CHANNEL_ID = ctx.channel.id
-    await ctx.send(f"Set {ctx.channel} as default role log channel.")
+    await ctx.send(f"Set <#{ROLELOG_CHANNEL_ID}> as default role log channel.")
     print(f'Set {ROLELOG_CHANNEL_ID} as default role log channel')
 
 
