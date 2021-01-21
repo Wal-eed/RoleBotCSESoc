@@ -2,7 +2,7 @@ import os
 import time
 import discord
 from discord.ext import commands
-from discord.utils import get
+from discord.utils import find
 
 
 client = commands.Bot(command_prefix="!")
@@ -59,45 +59,42 @@ async def setrolelog(ctx):
 
 # Give user a role.
 @client.command()
-async def give(ctx, role_input):
+async def give(ctx, *role_inputs):
     global ROLELOG_CHANNEL_ID
+    logchannel = client.get_channel(ROLELOG_CHANNEL_ID)
     user = ctx.message.author
     message = ctx.message
-    role_input = role_input.upper()
-    channel = client.get_channel(ROLELOG_CHANNEL_ID)
     if message.channel.id == ROLE_CHANNEL_ID:
-        try:
-            role = get(ctx.guild.roles, name=role_input)
-            await user.add_roles(role)
-            await ctx.message.add_reaction("👍")
-            await ctx.send(f'Added {role_input} to {user}')
-            await channel.send(f'Added {role_input} to {user}')
-        except:
-            await ctx.send('Please wait before sending another message. Please make sure your course code '
-                           'is joined together. eg:COMP1511')
-            await channel.send(f'Failed to add {role_input} to {user}')
-            
+        for role_input in role_inputs:
+            role_input = role_input.upper()
+            try:
+                role = find(lambda r: role_input in r.name, ctx.guild.roles)
+                await user.add_roles(role)
+                await ctx.send(f'✅ Gave {role.name} to {user}')
+                await logchannel.send(f'✅ Gave {role.name} to {user}')
+            except:
+                await ctx.send(f'❌ Failed to give {role_input} to {user}')
+                await logchannel.send(f'❌ Failed to give {role_input} to {user}')
+
 
 # Take away user's role.
 @client.command()
-async def remove(ctx, role_input):
+async def remove(ctx, *role_inputs):
     global ROLELOG_CHANNEL_ID
-    channel = client.get_channel(ROLELOG_CHANNEL_ID)
-
+    logchannel = client.get_channel(ROLELOG_CHANNEL_ID)
     user = ctx.message.author
     message = ctx.message
-    role_input = role_input.upper()
     if message.channel.id == ROLE_CHANNEL_ID:
-        try:
-            role = get(ctx.guild.roles, name=role_input)
-            await user.remove_roles(role)
-            await ctx.message.add_reaction("👍")
-            await ctx.send(f'Removed {role_input} from {user}')
-            await channel.send(f'Removed {role_input} to {user}')
-        except:
-            await ctx.send('Please wait before sending another message. Please make sure your course code '
-                           'is joined together. eg:COMP1511')
-            await channel.send(f'Failed to remove {role_input} from {user}')
+        for role_input in role_inputs:
+            role_input = role_input.upper()
+            try:
+                role = find(lambda r: role_input in r.name, ctx.guild.roles)
+                await user.remove_roles(role)
+                await ctx.send(f'✅ Removed {role.name} from {user}')
+                await logchannel.send(f'✅ Removed {role.name} from {user}')
+            except:
+                await ctx.send(f'❌ Failed to remove {role_input} from {user}')
+                await logchannel.send(f'❌ Failed to remove {role_input} from {user}')
 
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
