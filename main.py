@@ -64,6 +64,7 @@ async def give(ctx, *role_inputs):
     logchannel = client.get_channel(ROLELOG_CHANNEL_ID)
     user = ctx.message.author
     message = ctx.message
+    success = True
     if message.channel.id == ROLE_CHANNEL_ID:
         for role_input in role_inputs:
             role_input = role_input.upper()
@@ -75,6 +76,9 @@ async def give(ctx, *role_inputs):
             except:
                 await ctx.send(f'❌ Failed to give {role_input} to {user}. Please make sure your course code matches exactly e.g. `COMP1511` not `COMP 1511`')
                 await logchannel.send(f'❌ Failed to give {role_input} to {user}')
+                success = False
+        if success:
+            await ctx.message.add_reaction("👍")
 
 
 # Take away user's role.
@@ -84,6 +88,7 @@ async def remove(ctx, *role_inputs):
     logchannel = client.get_channel(ROLELOG_CHANNEL_ID)
     user = ctx.message.author
     message = ctx.message
+    success = True
     if message.channel.id == ROLE_CHANNEL_ID:
         for role_input in role_inputs:
             role_input = role_input.upper()
@@ -95,6 +100,9 @@ async def remove(ctx, *role_inputs):
             except:
                 await ctx.send(f'❌ Failed to remove {role_input} from {user}. Please make sure your course code matches exactly e.g. `COMP1511` not `COMP 1511`')
                 await logchannel.send(f'❌ Failed to remove {role_input} from {user}')
+                success = False
+        if success:
+            await ctx.message.add_reaction("👍")
 
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
