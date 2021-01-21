@@ -2,7 +2,7 @@ import os
 import time
 import discord
 from discord.ext import commands
-from discord.utils import find
+from discord.utils import get
 
 
 client = commands.Bot(command_prefix="!")
@@ -68,10 +68,10 @@ async def give(ctx, *role_inputs):
         for role_input in role_inputs:
             role_input = role_input.upper()
             try:
-                role = find(lambda r: role_input in r.name, ctx.guild.roles)
+                role = get(ctx.guild.roles, name=role_input)
                 await user.add_roles(role)
-                await ctx.send(f'✅ Gave {role.name} to {user}')
-                await logchannel.send(f'✅ Gave {role.name} to {user}')
+                await ctx.send(f'✅ Gave {role_input} to {user}')
+                await logchannel.send(f'✅ Gave {role_input} to {user}')
             except:
                 await ctx.send(f'❌ Failed to give {role_input} to {user}')
                 await logchannel.send(f'❌ Failed to give {role_input} to {user}')
@@ -88,10 +88,10 @@ async def remove(ctx, *role_inputs):
         for role_input in role_inputs:
             role_input = role_input.upper()
             try:
-                role = find(lambda r: role_input in r.name, ctx.guild.roles)
+                role = get(ctx.guild.roles, name=role_input)
                 await user.remove_roles(role)
-                await ctx.send(f'✅ Removed {role.name} from {user}')
-                await logchannel.send(f'✅ Removed {role.name} from {user}')
+                await ctx.send(f'✅ Removed {role_input} from {user}')
+                await logchannel.send(f'✅ Removed {role_input} from {user}')
             except:
                 await ctx.send(f'❌ Failed to remove {role_input} from {user}')
                 await logchannel.send(f'❌ Failed to remove {role_input} from {user}')
