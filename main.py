@@ -100,4 +100,15 @@ async def remove(ctx, role_input):
             await channel.send(f'Failed to remove {role_input} from {user}')
 
 
+# Count number of members in a role
+@client.command()
+@commands.has_permissions(administrator=True)
+async def countmembers(ctx, role_name):
+    role = get(ctx.guild.roles, name=role_name)
+    try:
+        await ctx.send(f"`{role_name}` has {len(role.members)} members")
+    except:
+        await ctx.send(f"`{role_name}` was not found. Please make sure the spelling and capitalisation is correct")
+
+
 client.run(os.environ['DISCORD_BOT_TOKEN'])
