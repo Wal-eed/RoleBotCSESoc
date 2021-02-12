@@ -2,7 +2,7 @@ import os
 import time
 import discord
 from discord.ext import commands
-from discord.utils import get
+from discord.utils import get, find
 
 
 # Enables custom intents and explicitly allows access to members
@@ -37,12 +37,16 @@ async def on_message(message):
 # Count the number of members with a certain role 
 @client.command()
 @commands.has_permissions(administrator=True)
-async def countmembers(ctx, role_name):
-    role = get(ctx.guild.roles, name=role_name)
+async def countmembers(ctx, *role_names):
+    
+    roletosearch = " ".join(role_names)
+
+    role = find(lambda r: roletosearch.lower() == r.name.lower(), ctx.guild.roles)
+    
     try:
-        await ctx.send(f"`{role_name}` has {len(role.members)} members")
+        await ctx.send(f"`{roletosearch}` has {len(role.members)} members")
     except:
-        await ctx.send(f"`{role_name}` was not found. Please make sure the spelling and capitalisation is correct")
+        await ctx.send(f"`{roletosearch}` was not found. Please make sure the spelling and capitalisation is correct")
 
 
 # Change the command prefix during runtime 
