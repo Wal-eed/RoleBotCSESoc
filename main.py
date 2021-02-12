@@ -5,9 +5,15 @@ from discord.ext import commands
 from discord.utils import get
 
 
-client = commands.Bot(command_prefix="!")
+# Enables custom intents and explicitly allows access to members
+intents = discord.Intents.default()  
+intents.members = True
+
+
+client = commands.Bot(command_prefix="!", intents=intents)
 ROLE_CHANNEL_ID = 0
 ROLELOG_CHANNEL_ID = 0
+
 
 @client.event
 async def on_ready():
@@ -28,6 +34,26 @@ async def on_message(message):
         await message.delete()
 
 
+# Count the number of members with a certain role 
+@client.command()
+@commands.has_permissions(administrator=True)
+async def countmembers(ctx, role_name):
+    role = get(ctx.guild.roles, name=role_name)
+    try:
+        await ctx.send(f"`{role_name}` has {len(role.members)} members")
+    except:
+        await ctx.send(f"`{role_name}` was not found. Please make sure the spelling and capitalisation is correct")
+
+
+# Change the command prefix during runtime 
+@client.command()
+@commands.has_permissions(administrator=True)
+async def changeprefix(ctx, newprefix):
+    client.command_prefix = newprefix
+    await ctx.send(f"Set `{newprefix}` as the new command prefix")
+    print(f"Set {newprefix} as the new command prefix")
+
+
 # Clear multiple messages in a channel at once, up to 10 at a time.
 @client.command()
 @commands.has_permissions(administrator=True)
@@ -37,7 +63,7 @@ async def clear(ctx, count=3):
     await ctx.channel.purge(limit=count)
 
 
-#Set role channel.
+# Set role channel.
 @client.command()
 @commands.has_permissions(administrator=True)
 async def setrole(ctx):
