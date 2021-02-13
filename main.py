@@ -2,12 +2,18 @@ import os
 import time
 import discord
 from discord.ext import commands
-from discord.utils import get
+from discord.utils import get, find
 
 
-client = commands.Bot(command_prefix="!")
+# Enables custom intents and explicitly allows access to members
+intents = discord.Intents.default()  
+intents.members = True
+
+
+client = commands.Bot(command_prefix="!", intents=intents)
 ROLE_CHANNEL_ID = 0
 ROLELOG_CHANNEL_ID = 0
+
 
 @client.event
 async def on_ready():
@@ -28,6 +34,30 @@ async def on_message(message):
         await message.delete()
 
 
+# Count the number of members with a certain role 
+@client.command()
+@commands.has_permissions(administrator=True)
+async def countmembers(ctx, *role_names):
+    
+    roletosearch = " ".join(role_names)
+
+    role = find(lambda r: roletosearch.lower() == r.name.lower(), ctx.guild.roles)
+    
+    try:
+        await ctx.send(f"`{roletosearch}` has {len(role.members)} members")
+    except:
+        await ctx.send(f"`{roletosearch}` was not found. Please make sure the spelling and capitalisation is correct")
+
+
+# Change the command prefix during runtime 
+@client.command()
+@commands.has_permissions(administrator=True)
+async def changeprefix(ctx, newprefix):
+    client.command_prefix = newprefix
+    await ctx.send(f"Set `{newprefix}` as the new command prefix")
+    print(f"Set {newprefix} as the new command prefix")
+
+
 # Clear multiple messages in a channel at once, up to 10 at a time.
 @client.command()
 @commands.has_permissions(administrator=True)
@@ -37,13 +67,13 @@ async def clear(ctx, count=3):
     await ctx.channel.purge(limit=count)
 
 
-#Set role channel.
+# Set role channel.
 @client.command()
 @commands.has_permissions(administrator=True)
 async def setrole(ctx):
     global ROLE_CHANNEL_ID
     ROLE_CHANNEL_ID = ctx.channel.id
-    await ctx.send(f"Set {ctx.channel} as default role channel.")
+    await ctx.send(f"Set <#{ROLE_CHANNEL_ID}> as default role channel.")
     print(f'Set {ROLE_CHANNEL_ID} as default role channel')
 
 
@@ -53,51 +83,56 @@ async def setrole(ctx):
 async def setrolelog(ctx):
     global ROLELOG_CHANNEL_ID
     ROLELOG_CHANNEL_ID = ctx.channel.id
-    await ctx.send(f"Set {ctx.channel} as default role log channel.")
+    await ctx.send(f"Set <#{ROLELOG_CHANNEL_ID}> as default role log channel.")
     print(f'Set {ROLELOG_CHANNEL_ID} as default role log channel')
 
 
 # Give user a role.
 @client.command()
-async def give(ctx, role_input):
+async def give(ctx, *role_inputs):
     global ROLELOG_CHANNEL_ID
+    logchannel = client.get_channel(ROLELOG_CHANNEL_ID)
     user = ctx.message.author
     message = ctx.message
-    role_input = role_input.upper()
-    channel = client.get_channel(ROLELOG_CHANNEL_ID)
+    success = True
     if message.channel.id == ROLE_CHANNEL_ID:
-        try:
-            role = get(ctx.guild.roles, name=role_input)
-            await user.add_roles(role)
+        for role_input in role_inputs:
+            role_input = role_input.upper()
+            try:
+                role = get(ctx.guild.roles, name=role_input)
+                await user.add_roles(role)
+                await ctx.send(f'✅ Gave {role_input} to {user}')
+                await logchannel.send(f'✅ Gave {role_input} to {user}')
+            except:
+                await ctx.send(f'❌ Failed to give {role_input} to {user}. Please make sure your course code matches exactly e.g. `COMP1511` not `COMP 1511`')
+                await logchannel.send(f'❌ Failed to give {role_input} to {user}')
+                success = False
+        if success:
             await ctx.message.add_reaction("👍")
-            await ctx.send(f'Added {role_input} to {user}')
-            await channel.send(f'Added {role_input} to {user}')
-        except:
-            await ctx.send('Please wait before sending another message. Please make sure your course code '
-                           'is joined together. eg:COMP1511')
-            await channel.send(f'Failed to add {role_input} to {user}')
-            
+
 
 # Take away user's role.
 @client.command()
-async def remove(ctx, role_input):
+async def remove(ctx, *role_inputs):
     global ROLELOG_CHANNEL_ID
-    channel = client.get_channel(ROLELOG_CHANNEL_ID)
-
+    logchannel = client.get_channel(ROLELOG_CHANNEL_ID)
     user = ctx.message.author
     message = ctx.message
-    role_input = role_input.upper()
+    success = True
     if message.channel.id == ROLE_CHANNEL_ID:
-        try:
-            role = get(ctx.guild.roles, name=role_input)
-            await user.remove_roles(role)
+        for role_input in role_inputs:
+            role_input = role_input.upper()
+            try:
+                role = get(ctx.guild.roles, name=role_input)
+                await user.remove_roles(role)
+                await ctx.send(f'✅ Removed {role_input} from {user}')
+                await logchannel.send(f'✅ Removed {role_input} from {user}')
+            except:
+                await ctx.send(f'❌ Failed to remove {role_input} from {user}. Please make sure your course code matches exactly e.g. `COMP1511` not `COMP 1511`')
+                await logchannel.send(f'❌ Failed to remove {role_input} from {user}')
+                success = False
+        if success:
             await ctx.message.add_reaction("👍")
-            await ctx.send(f'Removed {role_input} from {user}')
-            await channel.send(f'Removed {role_input} to {user}')
-        except:
-            await ctx.send('Please wait before sending another message. Please make sure your course code '
-                           'is joined together. eg:COMP1511')
-            await channel.send(f'Failed to remove {role_input} from {user}')
 
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
