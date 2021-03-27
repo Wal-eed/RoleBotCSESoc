@@ -17,6 +17,7 @@ Only users with administrator privileges can use these commands.
 ##### ```!give ROLE1 ROLE2 ROLE3 ...``` : Gives the specified role(s) to the user.
 ##### ```!remove ROLE1 ROLE2 ROLE3 ...``` : Removes the specified role(s) from the user.
 ##### ```!countmembers ROLE```* : Counts the number of members with the specified role.
+#### ```!bulkgive ROLE```: Give multiple users the same role. An attached CSV file is needed when calling this command. The file should have all the usernames in a single column in the CSV file (with no header). 
 ##### ```!clear VALUE``` : Clears multiple messages at once in the channel the command is used in, up to a maximum of 10 at a time. Only users with administrator privileges can use this.
 ##### ```!changeprefix NEWPREFIX``` : Changes the default command prefix from '!' to NEWPREFIX. (*Example:`!changeprefix +` will make all future commands only run when the prefix is '+'*). Only users with administrator privileges can use this.
 
