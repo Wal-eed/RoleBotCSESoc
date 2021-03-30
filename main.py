@@ -1,6 +1,7 @@
 import os
 import time
 import discord
+import csv
 from discord.ext import commands
 from discord.utils import get, find
 
@@ -58,10 +59,11 @@ async def remove_unverified(ctx):
         Also gives reason for kick. 
     """
     i = 0
-    for member in ctx.message.server.members:
-        if get(member.roles, name=UNVERFIED_ROLE):
+    for member in ctx.guild.members:
+        if get(member.roles, name = 'unverified' ):
             i += 1
-            await bot.kick(member, "You have been removed from the CSESoc Server - as you have not verified via the instructions in #welcome")
+            await member.send(content = "You have been removed from the CSESoc Server - as you have not verified via the instructions in #welcome")
+            await member.kick(reason = "You have been removed from the CSESoc Server - as you have not verified via the instructions in #welcome")
     
     await ctx.send(f"Removed {i} unverified members")
     print(f"Removed {i} unverified members")
@@ -200,3 +202,4 @@ async def bulkgive (ctx, role_input):
             
 if __name__ == '__main__':
     client.run(os.environ['DISCORD_BOT_TOKEN'])
+
