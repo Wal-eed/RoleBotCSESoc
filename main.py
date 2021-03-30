@@ -165,4 +165,38 @@ async def remove(ctx, *role_inputs):
             await ctx.message.add_reaction("👍")
 
 
-client.run(os.environ['DISCORD_BOT_TOKEN'])
+@client.command()
+@commands.has_permissions(administrator=True)
+async def bulkgive (ctx, role_input):
+    """
+        Give all the users in a CSV file a specific role
+    """
+    logchannel = client.get_channel(ROLELOG_CHANNEL_ID)
+    
+    members_given = 0
+    path = os.getcwd() + '/CSVFile.csv'
+
+    # Get attached CSV file
+    attachment_file = ctx.message.attachments[0]
+    role = get(ctx.guild.roles, name=role_input)
+
+    # Save file locally
+    await attachment_file.save(path)
+    
+    with open('CSVFile.csv', 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            try:
+                user = ctx.guild.get_member_named(row[0])
+                await user.add_roles(role)
+                members_given += 1
+            except:
+                await logchannel.send(f'❌ Failed to give {role_input} to {user}')
+    
+    await logchannel.send(f"Gave {members_given} members the role `{role_input}`")
+    
+    os.remove(path)
+            
+            
+if __name__ == '__main__':
+    client.run(os.environ['DISCORD_BOT_TOKEN'])
