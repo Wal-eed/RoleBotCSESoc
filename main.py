@@ -187,15 +187,16 @@ async def bulkgive (ctx, role_input):
     
     with open('CSVFile.csv', 'r') as file:
         reader = csv.reader(file)
+        await logchannel.send(f'✅ Starting bulkgive for {role_input} role: ')
         for row in reader:
             try:
                 user = ctx.guild.get_member_named(row[0])
                 await user.add_roles(role)
                 members_given += 1
             except:
-                await logchannel.send(f'❌ Failed to give {role_input} to {user}')
+                await logchannel.send(f'❌ Failed to give {role_input} to {row[0]}')
     
-    await logchannel.send(f"Gave {members_given} members the role `{role_input}`")
+    await logchannel.send(f"{ctx.message.author.mention} Gave {members_given} members the role `{role_input}`")
     
     os.remove(path)
             
